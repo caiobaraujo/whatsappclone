@@ -5,10 +5,11 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import './App.css';
 import ChatListItem from './components/ChatListItem';
+import ChatIntro from './components/ChatIntro';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
-  const [chatlist, setChatList] = useState([{}, {}, {}, {}]);
+  const [chatlist, setChatList] = useState([{}, {}, {}, {}, {}, {}, {}, {}]);
 
   return (
     <div className="app-window">
@@ -46,7 +47,11 @@ export default () => {
           ))}
         </div>
       </div>
-      <div className="contentarea">...</div>
+      <div className="contentarea">
+        <div className="chat">
+          <ChatIntro />
+        </div>
+      </div>
     </div>
   );
 };
