@@ -8,13 +8,52 @@ import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import CloseIcon from '@material-ui/icons/Close';
 import SendIcon from '@material-ui/icons/Send';
 import MicIcon from '@material-ui/icons/Mic';
+import MessageItem from './MessageItem';
 
 import './ChatWindow.css';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default ({ user, data }) => {
+  const body = useRef();
+
+  let recognition = null;
+
+  let SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SpeechRecognition !== undefined) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR';
+  }
+
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [text, setText] = useState('');
+  const [listening, setListening] = useState(false); // State que vai fazer o controle de quando o botão está sendo clicado (microfone)
+  const [list, setList] = useState([
+    { author: 123, body: 'bla bla bla' },
+    { author: 123, body: 'bla bla ' },
+    { author: 1234, body: 'bla bla bla bla' },
+    { author: 123, body: 'bla bla bla' },
+    { author: 123, body: 'bla bla ' },
+    { author: 1234, body: 'bla bla bla bla' },
+    { author: 123, body: 'bla bla bla' },
+    { author: 123, body: 'bla bla ' },
+    { author: 1234, body: 'bla bla bla bla' },
+    { author: 123, body: 'bla bla bla' },
+    { author: 123, body: 'bla bla ' },
+    { author: 1234, body: 'bla bla bla bla' },
+    { author: 123, body: 'bla bla bla' },
+    { author: 123, body: 'bla bla ' },
+    { author: 1234, body: 'bla bla bla bla' },
+  ]);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    if (body.current.scrollHeight > body.current.offsetHeight) {
+      body.current.scrollTop =
+        body.current.scrollHeight - body.current.offsetHeight;
+    }
+  }, [list]);
 
   const handleEmojiClick = (e, emojiObject) => {
     setText(text + emojiObject.emoji);
@@ -27,12 +66,46 @@ export default ({ user, data }) => {
     setEmojiOpen(false);
   };
 
+  const handleSendClick = () => {
+    if (text.length > 0) {
+      setList([
+        ...list,
+        {
+          type: 'sent',
+          text,
+          date: new Date(),
+        },
+      ]);
+      setText('');
+    }
+  };
+
+  const handleMicClick = () => {
+    if (recognition !== null) {
+      recognition.onstart = () => {
+        console.log('entrou01');
+        setListening(true);
+      };
+      recognition.onend = () => {
+        console.log('entrou02');
+        setListening(false);
+      };
+      recognition.onresult = (e) => {
+        console.log('entrou03');
+
+        setText(e.results[0][0].transcript);
+        console.log(e.results[0][0].transcript);
+      };
+      recognition.start();
+    }
+  };
+
   return (
     <div className="chatWindow">
       <div className="chatWindow--header">
         <div className="chatWindow--headerinfo">
           <img className="chatWindow--avatar" src="" alt="" />
-          <div className="chatWindow--name"></div>
+          <div className="chatWindow--name">Caio Araujo</div>
         </div>
         <div className="chatWindow--headerbuttons">
           <div className="chatWindow--btn">
@@ -46,7 +119,11 @@ export default ({ user, data }) => {
           </div>
         </div>
       </div>
-      <div className="chatWindow--body"></div>
+      <div ref={body} className="chatWindow--body">
+        {list.map((item, key) => (
+          <MessageItem key={key} data={item} user={user} />
+        ))}
+      </div>
       <div
         className="chatWindow--emojiarea"
         style={{ height: emojiOpen ? '200px' : '0px' }}
@@ -81,7 +158,18 @@ export default ({ user, data }) => {
             onChange={(e) => setText(e.target.value)}
           ></input>
         </div>
-        <div className="chatWindow--pos"></div>
+        <div className="chatWindow--pos">
+          {text === '' && (
+            <div onClick={handleMicClick} className="chatWindow--btn">
+              <MicIcon style={{ color: listening ? '#126ECE' : '#919191' }} />
+            </div>
+          )}
+          {text !== '' && (
+            <div onClick={handleSendClick} className="chatWindow--btn">
+              <SendIcon style={{ color: '#919191' }} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
