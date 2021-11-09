@@ -6,11 +6,37 @@ import SearchIcon from '@material-ui/icons/Search';
 import './App.css';
 import ChatListItem from './components/ChatListItem';
 import ChatIntro from './components/ChatIntro';
+import ChatWindow from './components/ChatWindow';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
-  const [chatlist, setChatList] = useState([{}, {}, {}, {}, {}, {}, {}, {}]);
-
+  const [chatlist, setChatList] = useState([
+    {
+      chatId: 1,
+      title: 'fulano de Tal',
+      image:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4XSv8zvv1XvIvvz8PFg8hRwUTQJjbis-CJg&usqp=CAU',
+    },
+    {
+      chatId: 2,
+      title: 'fulano de Tal',
+      image:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4XSv8zvv1XvIvvz8PFg8hRwUTQJjbis-CJg&usqp=CAU',
+    },
+    {
+      chatId: 3,
+      title: 'fulano de Tal',
+      image:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4XSv8zvv1XvIvvz8PFg8hRwUTQJjbis-CJg&usqp=CAU',
+    },
+    {
+      chatId: 4,
+      title: 'fulano de Tal',
+      image:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4XSv8zvv1XvIvvz8PFg8hRwUTQJjbis-CJg&usqp=CAU',
+    },
+  ]);
+  const [activeChat, setActiveChat] = useState({});
   return (
     <div className="app-window">
       <div className="sidebar">
@@ -43,14 +69,18 @@ export default () => {
         </div>
         <div className="chatlist">
           {chatlist.map((item, key) => (
-            <ChatListItem key={key} />
+            <ChatListItem
+              key={key}
+              data={item}
+              active={activeChat.chatId === chatlist[key].chatId}
+              onClick={() => setActiveChat(chatlist[key])}
+            />
           ))}
         </div>
       </div>
       <div className="contentarea">
-        <div className="chat">
-          <ChatIntro />
-        </div>
+        {activeChat.chatId !== undefined && <ChatWindow />}
+        {activeChat.chatId === undefined && <ChatIntro />}
       </div>
     </div>
   );

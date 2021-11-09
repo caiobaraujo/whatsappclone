@@ -2,19 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './ChatListItem.css';
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default () => {
+export default ({ onClick, active, data }) => {
   return (
-    <div className="chatListItem">
-      <img
-        className="chatListItem--avatar"
-        src={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4XSv8zvv1XvIvvz8PFg8hRwUTQJjbis-CJg&usqp=CAU'
-        }
-        alt="img"
-      ></img>
+    <div className={`chatListItem ${active ? 'active' : ''}`} onClick={onClick}>
+      <img className="chatListItem--avatar" src={data.image} alt="img"></img>
       <div className="chatListItem--lines">
         <div className="chatListItem--line">
-          <div className="chatListItem--name">Caio Araujo</div>
+          <div className="chatListItem--name">{data.title}</div>
           <div className="chatListItem--date">17:00</div>
         </div>
 
